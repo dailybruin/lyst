@@ -2,14 +2,30 @@
 <html lang="en">
   <head>
     <title><%- title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css'></link>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
   </head>
   <body>
     <h1><%- title %></h1>
     <p>Welcome to <%- title %></p>
-    <p><%- test %></p>
+    <canvas id="myChart" width="400" height="400"></canvas>
   </body>
   <script>
-    <%- console.log(test) %>
+    var ctx = document.getElementById("myChart").getContext("2d");
+    var data = {
+      labels: ["<%-test[0][0]%>", "<%-test[1][0]%>"],
+      datasets: [
+        {
+            label: "test",
+            fillColor: "rgba(220,220,220,0.5)",
+            strokeColor: "rgba(220,220,220,0.8)",
+            highlightFill: "rgba(220,220,220,0.75)",
+            highlightStroke: "rgba(220,220,220,1)",
+            data: [<%-test[0][1]%>, <%-test[1][1]%>]
+        }
+      ]
+    }
+    var myBarChart = new Chart(ctx).Bar(data);
+    console.log(test);
   </script>
 </html>
