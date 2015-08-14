@@ -1,8 +1,30 @@
 body {
-  padding: 50px;
+  margin: 0;
+  margin-left: 12.5rem;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+header {
+  position: fixed;
+  left: 0.5rem;
+  width: 10rem;
+}
+
+header ul {
+  padding: 1rem;
+  margin: 0;
+  list-style-type: none;
+}
+
+header ul li {
+  padding: 0.5rem;
+}
+
+header ul li.title {
+  font-size: 2rem;
 }
 
 a {
   color: #00B7FF;
+  text-decoration: none;
 }
