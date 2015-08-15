@@ -17,23 +17,8 @@
       </ul>
     </header>
     <h1><%- title %></h1>
-    <canvas id="myChart" width="400" height="400"></canvas>
+    <input type="text"></input>
   </body>
   <script>
-    var ctx = document.getElementById("myChart").getContext("2d");
-    var data = {
-      labels: ["<%-result[0][0]%>", "<%-result[1][0]%>"],
-      datasets: [
-        {
-            label: "result",
-            fillColor: "rgba(220,220,220,0.5)",
-            strokeColor: "rgba(220,220,220,0.8)",
-            highlightFill: "rgba(220,220,220,0.75)",
-            highlightStroke: "rgba(220,220,220,1)",
-            data: [<%-result[0][1]%>, <%-result[1][1]%>]
-        }
-      ]
-    }
-    var myBarChart = new Chart(ctx).Bar(data);
   </script>
 </html>
