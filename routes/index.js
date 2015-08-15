@@ -4,57 +4,43 @@ var request = require('request');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  var test;
-  request('https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICAgIAKDA', function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      test = JSON.parse(body);
-      res.render('index', { title: '24 hours', test: test["rows"] });
-    }
-  })
+  makeRequest(req, res, next,
+    'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICAgIAKDA',
+                  '24 hours');
 });
 
 router.get('/7days', function(req, res, next) {
-  var test;
-  request('https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICAgIAKDA', function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      test = JSON.parse(body);
-      console.log(test["rows"]);
-      res.render('index', { title: '7 days', test: test["rows"] });
-    }
-  })
+  makeRequest(req, res, next,
+    'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICAgIAKDA',
+                  '7 days');
 });
 
 router.get('/30days', function(req, res, next) {
-  var test;
-  request('https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICAgIAKDA', function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      test = JSON.parse(body);
-      console.log(test["rows"]);
-      res.render('index', { title: '30 days', test: test["rows"] });
-    }
-  })
+  makeRequest(req, res, next,
+    'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICAgIAKDA',
+                  '30 days');
 });
 
 router.get('/1year', function(req, res, next) {
-  var test;
-  request('https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICAgIAKDA', function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      test = JSON.parse(body);
-      console.log(test["rows"]);
-      res.render('index', { title: '1 year', test: test["rows"] });
-    }
-  })
+  makeRequest(req, res, next,
+    'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICAgIAKDA',
+                  '1 year');
 });
 
 router.get('/custom', function(req, res, next) {
-  var test;
-  request('https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICAgIAKDA', function (error, response, body) {
+  makeRequest(req, res, next,
+    'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICAgIAKDA',
+                  'Custom query');
+});
+
+function makeRequest(req, res, next, queryurl, title) {
+  var result;
+  request(queryurl, function (error, response, body) {
     if (!error && response.statusCode == 200) {
-      test = JSON.parse(body);
-      console.log(test["rows"]);
-      res.render('index', { title: 'Custom query', test: test["rows"] });
+      result = JSON.parse(body);
+      res.render('index', { title: title, result: result["rows"] });
     }
   })
-});
+}
 
 module.exports = router;

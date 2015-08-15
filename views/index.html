@@ -22,15 +22,15 @@
   <script>
     var ctx = document.getElementById("myChart").getContext("2d");
     var data = {
-      labels: ["<%-test[0][0]%>", "<%-test[1][0]%>"],
+      labels: ["<%-result[0][0]%>", "<%-result[1][0]%>"],
       datasets: [
         {
-            label: "test",
+            label: "result",
             fillColor: "rgba(220,220,220,0.5)",
             strokeColor: "rgba(220,220,220,0.8)",
             highlightFill: "rgba(220,220,220,0.75)",
             highlightStroke: "rgba(220,220,220,1)",
-            data: [<%-test[0][1]%>, <%-test[1][1]%>]
+            data: [<%-result[0][1]%>, <%-result[1][1]%>]
         }
       ]
     }
