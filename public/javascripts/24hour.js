@@ -129,7 +129,7 @@ window.onload = function() {
           $("#area1").width('60%');
           $("#area1").append("<h2>Popular pages</h2>");
           for (var i = 0; i < message.length; i++) {
-            $("#area1").append("<p><a href='http://dailybruin.com"+message[i][0]+"'>"+ message[i][1] +"</a> "+ message[i][2] +"</p>");
+            $("#area1").append("<p><a href='http://dailybruin.com"+message[i][0]+"'>"+ message[i][1].replace("| Daily Bruin", "") +"</a> "+ message[i][2] +"</p>");
           }
         }
     })
