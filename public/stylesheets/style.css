@@ -25,6 +25,46 @@ header ul li.title {
 }
 
 a {
-  color: #00B7FF;
+  color: #43217A;
   text-decoration: none;
+}
+
+a:hover {
+  color: #6207C4;
+}
+
+.title {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+#area1,
+#area2 {
+  display: inline-block;
+  padding: 0.5rem;
+  vertical-align:top;
+}
+
+.line {
+  fill: none;
+  stroke-width: 1.5px;
+}
+
+.line .first {
+  stroke: #6207C4;
+}
+
+.line .second {
+  stroke: #6207C4;
+}
+
+.point {
+  fill: black;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #444;
+  shape-rendering: crispEdges;
 }

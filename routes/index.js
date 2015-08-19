@@ -4,43 +4,23 @@ var request = require('request');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  makeRequest(req, res, next,
-    'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICAgIAKDA',
-                  '24 hours', 'index');
+  res.render('index', { title: "24 hours", update: "daily", javascript: "24hour.js" });
 });
 
 router.get('/7days', function(req, res, next) {
-  makeRequest(req, res, next,
-    'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICAgIAKDA',
-                  '7 days', 'index');
+  res.render('index', { title: "7 days", update: "daily", javascript: "7day.js" });
 });
 
 router.get('/30days', function(req, res, next) {
-  makeRequest(req, res, next,
-    'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICAgIAKDA',
-                  '30 days', 'index');
+  res.render('index', { title: "30 days", update: "daily", javascript: "30day.js" });
 });
 
 router.get('/1year', function(req, res, next) {
-  makeRequest(req, res, next,
-    'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICAgIAKDA',
-                  '1 year', 'index');
+  res.render('index', { title: "1 year", update: "monthly", javascript: "1year.js" });
 });
 
 router.get('/custom', function(req, res, next) {
-  makeRequest(req, res, next,
-    'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICAgIAKDA',
-                  'Custom query', 'custom');
+  res.render('index', { title: "Custom query", update: "daily", javascript: "custom.js" });
 });
-
-function makeRequest(req, res, next, queryurl, title, view) {
-  var result;
-  request(queryurl, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      result = JSON.parse(body);
-      res.render(view, { title: title, result: result["rows"] });
-    }
-  })
-}
 
 module.exports = router;

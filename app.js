@@ -9,6 +9,11 @@ var request = require('request');
 var routes = require('./routes/index');
 
 var app = express();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+
+server.listen(3000);
+
 app.engine('.html', require('ejs').__express);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -59,5 +64,32 @@ app.use(function(err, req, res, next) {
   });
 });
 
+io.on('connection', function (socket) {
+  //24 hour pageviews
+  makeRequest('pageviews','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIC6qI4KDA');
+  //24 hour user by hour
+  makeRequest('users','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICZ0oUKDA');
+  //24 hour search terms
+  makeRequest('searchterms','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIDejJAKDA');
+
+  //send every hour
+  // setInterval(function() {
+  //   //24 hour pageviews
+  //   makeRequest('pageviews','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIC6qI4KDA');
+  //   //24 hour user by hour
+  //   makeRequest('users','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICZ0oUKDA');
+  //
+  // }, 60 * 60 * 1000);
+
+  function makeRequest(emitName, queryurl) {
+    var result;
+    request(queryurl, function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        result = JSON.parse(body);
+        socket.emit(emitName, result["rows"]);
+      }
+    })
+  }
+});
 
 module.exports = app;
