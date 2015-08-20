@@ -5,6 +5,7 @@ window.onload = function() {
     height = 300-37;
 
     var points = 24;
+    var lines = 3;
 
     var margin = {top: 20, right:20, bottom:20, left:50};
 
@@ -35,8 +36,8 @@ window.onload = function() {
     var pointTip = d3.tip()
                     .attr('class', 'point-tip')
                     .html(function(d) {
-                          return "<p class='tip'>Hour:" +d.x * 24+ "</p> "
-                              + "<p class='tip'>Users:" +d.y +"</p>";
+                          return "<p>Hour: " +d.x * 24+ "</p> "
+                              + "<p>Users: " +d.y +"</p>";
                             });
 
     svg.call(pointTip);
@@ -44,11 +45,15 @@ window.onload = function() {
     d3.select(window).on('resize', resize);
 
     //initialize data
-    var data = [[],[]];
+    var data = [];
+    for (var l = 0; l < lines; l++) {
+      data.push([]);
+    }
 
     for (var i = 0; i < points; i++) {
-      data[0].push({x:i/points,y:0});
-      data[1].push({x:i/points,y:0});
+      for (var j = 0; j < lines; j++) {
+        data[j].push({x:i/points,y:0});
+      }
     }
     render(data);
 
@@ -103,7 +108,7 @@ window.onload = function() {
         lines.transition().duration(1500)
             .attr("d",line);
 
-       var colors = ["#3E92CC", "#2A628F", "13293D"];
+       var colors = ["#3E92CC", "#2A628F", "#13293D"];
         lines.enter()
             .append("path")
             .attr("class","line")
@@ -136,8 +141,8 @@ window.onload = function() {
           .on('mouseover', pointTip.show)
           .on('mouseout', pointTip.hide);
 
-        // points.exit()
-        //       .remove();
+        points.exit()
+              .remove();
       }
     }
 
@@ -170,14 +175,18 @@ window.onload = function() {
       if (message != undefined) {
         var newusers = [];
         var oldusers = [];
+        var totalusers = [];
+        var temp = 0;
         for (var i = 0; i < message.length; i++) {
           if (message[i][0] == "New Visitor") {
             newusers.push({x:message[i][1]/24,y:message[i][2]/1});
+            temp = message[i][2]/1;
           } else if (message[i][0] == "Returning Visitor") {
             oldusers.push({x:message[i][1]/24,y:message[i][2]/1})
+            totalusers.push({x:message[i][1]/24,y:temp+(message[i][2]/1)})
           }
         }
-        render([newusers,oldusers]);
+        render([newusers,oldusers,totalusers]);
       }
     })
 }
