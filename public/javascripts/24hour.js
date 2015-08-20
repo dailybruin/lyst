@@ -32,6 +32,15 @@ window.onload = function() {
       render(data);
     }
 
+    var pointTip = d3.tip()
+                    .attr('class', 'point-tip')
+                    .html(function(d) {
+                          return "<p class='tip'>Hour:" +d.x * 24+ "</p> "
+                              + "<p class='tip'>Users:" +d.y +"</p>";
+                            });
+
+    svg.call(pointTip);
+
     d3.select(window).on('resize', resize);
 
     //initialize data
@@ -110,13 +119,26 @@ window.onload = function() {
         lines.exit()
             .remove();
 
-        // svg.selectAll("circle.line")
-        //     .data(data)
-        //     .enter().append("circle")
-        //     .attr("class", "point")
-        //     .attr("cx", function(d) { return d.x; })
-        //     .attr("cy", function(d) { return d.y; })
-        //     .attr("r", 3.5);
+      for (var i = 0; i < data.length; i++) {
+        var points = svg.selectAll(".point"+i)
+              .data(data[i]);
+        points.attr("class", "update point"+i)
+              .transition()
+              .duration(1500)
+              .attr("cx", function(d) { return x(d.x); })
+              .attr("cy", function(d) { return y(d.y); });
+
+        points.enter().append("circle")
+          .attr("class", "enter point"+i)
+      		.attr("r", 3)
+      		.attr("cx", function(d) { return x(d.x); })
+      		.attr("cy", function(d) { return y(d.y); })
+          .on('mouseover', pointTip.show)
+          .on('mouseout', pointTip.hide);
+
+        // points.exit()
+        //       .remove();
+      }
     }
 
 
