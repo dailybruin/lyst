@@ -45,6 +45,15 @@ a:hover {
   vertical-align:top;
 }
 
+#area1 {
+  margin-right: 2rem;
+}
+
+span.viewcount {
+    float: right;
+    padding-left: 1rem;
+}
+
 .line {
   fill: none;
   stroke-width: 1.5px;

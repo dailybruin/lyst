@@ -36,7 +36,8 @@ window.onload = function() {
     var pointTip = d3.tip()
                     .attr('class', 'point-tip')
                     .html(function(d) {
-                          return "<p>Hour: " +d.x * 24+ "</p> "
+                          return  "<p>" + d.name + "</p> "
+                              + "<p>Hour: " +d.x * 24+ "</p> "
                               + "<p>Users: " +d.y +"</p>";
                             });
 
@@ -138,6 +139,7 @@ window.onload = function() {
       		.attr("r", 3)
       		.attr("cx", function(d) { return x(d.x); })
       		.attr("cy", function(d) { return y(d.y); })
+          .attr("name", "test")
           .on('mouseover', pointTip.show)
           .on('mouseout', pointTip.hide);
 
@@ -156,7 +158,9 @@ window.onload = function() {
           $("#area1").width('60%');
           $("#area1").append("<h2>Popular pages</h2>");
           for (var i = 0; i < message.length; i++) {
-            $("#area1").append("<p><a href='http://dailybruin.com"+message[i][0]+"'>"+ message[i][1].replace("| Daily Bruin", "") +"</a> "+ message[i][2] +"</p>");
+            $("#area1").append("<p><a href='http://dailybruin.com"+message[i][0]
+              +"'>"+ message[i][1].replace("| Daily Bruin", "")
+              +"</a><span class='viewcount'>"+ message[i][2] +"</span></p>");
           }
         }
     })
@@ -166,7 +170,8 @@ window.onload = function() {
           $("#area2").width('25%');
           $("#area2").append("<h2>Popular search terms</h2>");
           for (var i = 0; i < message.length; i++) {
-            $("#area2").append("<p>"+ message[i][0] + " " + message[i][1] +"</p>");
+            $("#area2").append("<p>"+ message[i][0]
+            + "<span class='viewcount'>"+ message[i][1] +"</span></p>");
           }
         }
     })
@@ -179,11 +184,17 @@ window.onload = function() {
         var temp = 0;
         for (var i = 0; i < message.length; i++) {
           if (message[i][0] == "New Visitor") {
-            newusers.push({x:message[i][1]/24,y:message[i][2]/1});
+            newusers.push({x:message[i][1]/24,
+                           y:message[i][2]/1,
+                           name:"New Users"});
             temp = message[i][2]/1;
           } else if (message[i][0] == "Returning Visitor") {
-            oldusers.push({x:message[i][1]/24,y:message[i][2]/1})
-            totalusers.push({x:message[i][1]/24,y:temp+(message[i][2]/1)})
+            oldusers.push({x:message[i][1]/24,
+                           y:message[i][2]/1,
+                           name:"Returning Users"});
+            totalusers.push({x:message[i][1]/24,
+                             y:temp+(message[i][2]/1),
+                             name:"Total Users"});
           }
         }
         render([newusers,oldusers,totalusers]);
