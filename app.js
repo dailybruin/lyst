@@ -71,7 +71,8 @@ io.on('connection', function (socket) {
   makeRequest('users','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICZ0oUKDA');
   //24 hour search terms
   makeRequest('searchterms','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIDejJAKDA');
-
+  //7 day users v social network
+  makeRequest('usersvsocial', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgID4lpUKDA');
   //send every hour
   // setInterval(function() {
   //   //24 hour pageviews

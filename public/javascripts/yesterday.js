@@ -2,7 +2,7 @@ window.onload = function() {
     var socket = io.connect('http://localhost:3000');
 
     var width = $("body").width(),
-    height = 300-37;
+    height = 400-37;
 
     var points = 24;
     var lines = 3;
@@ -29,6 +29,7 @@ window.onload = function() {
     //make line chart responsive
     function resize() {
       width = $("body").width() - margin.left - margin.right;
+      d3.select('svg').attr('width', $("body").width());
       x.range([0, width]);
       render(data);
     }
@@ -88,7 +89,7 @@ window.onload = function() {
         if (svg.selectAll(".y.axis")[0].length < 1 ){
             svg.append("g")
                 .attr("class","y axis")
-                .style("font-size","0.6rem")
+                .style("font-size","0.8rem")
                 .call(yAxis)
                 .append("text")
                 .attr("class", "y label")
@@ -96,7 +97,7 @@ window.onload = function() {
                 .attr("y", 6)
                 .attr("dy", ".75em")
                 .attr("transform", "rotate(-90)")
-                .style("font-size","0.6rem")
+                .style("font-size","0.8rem")
                 .text("number of users");
         } else {
             svg.selectAll(".y.axis").transition().duration(1500).call(yAxis);
@@ -148,19 +149,15 @@ window.onload = function() {
       }
     }
 
-
-    socket.on('status', function (message) {
-        render(data[0][0]);
-    });
-
     socket.on('pageviews', function (message) {
         if (message != undefined) {
-          $("#area1").width('60%');
+          $("#area1").width('65%');
           $("#area1").append("<h2>Popular pages</h2>");
+          $("#area1").append("<table></table>");
           for (var i = 0; i < message.length; i++) {
-            $("#area1").append("<p><a href='http://dailybruin.com"+message[i][0]
+            $("#area1 table").append("<tr><td><a href='http://dailybruin.com"+message[i][0]
               +"'>"+ message[i][1].replace("| Daily Bruin", "")
-              +"</a><span class='viewcount'>"+ message[i][2] +"</span></p>");
+              +"</a></td><td class='viewcount'>"+ message[i][2] +"</td></tr>");
           }
         }
     })
@@ -169,9 +166,10 @@ window.onload = function() {
         if (message != undefined) {
           $("#area2").width('25%');
           $("#area2").append("<h2>Popular search terms</h2>");
+          $("#area2").append("<table></table>");
           for (var i = 0; i < message.length; i++) {
-            $("#area2").append("<p>"+ message[i][0]
-            + "<span class='viewcount'>"+ message[i][1] +"</span></p>");
+            $("#area2 table").append("<tr><td>"+message[i][0]
+              +"</td><td class='viewcount'>"+ message[i][1] +"</td></tr>");
           }
         }
     })
@@ -186,15 +184,15 @@ window.onload = function() {
           if (message[i][0] == "New Visitor") {
             newusers.push({x:message[i][1]/24,
                            y:message[i][2]/1,
-                           name:"New Users"});
+                           name:message[i][0]});
             temp = message[i][2]/1;
           } else if (message[i][0] == "Returning Visitor") {
             oldusers.push({x:message[i][1]/24,
                            y:message[i][2]/1,
-                           name:"Returning Users"});
+                           name:message[i][0]});
             totalusers.push({x:message[i][1]/24,
                              y:temp+(message[i][2]/1),
-                             name:"Total Users"});
+                             name:message[i][0]});
           }
         }
         render([newusers,oldusers,totalusers]);

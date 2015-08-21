@@ -49,22 +49,26 @@ a:hover {
   margin-right: 2rem;
 }
 
-span.viewcount {
-    float: right;
+#area1 table,
+#area2 table {
+  width: 100%;
+}
+
+#area1 td,
+#area2 td {
+  padding-bottom: 0.75rem;
+}
+
+#area1 td.viewcount,
+#area2 td.viewcount {
+    align: right;
+    text-align: right;
     padding-left: 1rem;
 }
 
 .line {
   fill: none;
   stroke-width: 1.5px;
-}
-
-.line .first {
-  stroke: #6207C4;
-}
-
-.line .second {
-  stroke: #6207C4;
 }
 
 .point {
@@ -76,6 +80,11 @@ span.viewcount {
   fill: none;
   stroke: #444;
   shape-rendering: crispEdges;
+}
+
+.axis.x path.domain,
+.x .tick line {
+  stroke:none;
 }
 
 .point-tip {
@@ -92,7 +101,7 @@ span.viewcount {
   font-family: sans-serif;
   font-size: 0.75rem;
   margin: 0.25rem 0;
-  letter-spacing: 0.03rem;
+  letter-spacing: 0.02rem;
 }
 
 .point-tip:after {

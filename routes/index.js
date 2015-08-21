@@ -4,11 +4,11 @@ var request = require('request');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: "24 hours", update: "daily", javascript: "24hour.js" });
+  res.render('index', { title: "Yesterday", update: "daily", javascript: "yesterday.js" });
 });
 
 router.get('/7days', function(req, res, next) {
-  res.render('index', { title: "7 days", update: "daily", javascript: "7day.js" });
+  res.render('index', { title: "7 days", update: "daily", javascript: "7days.js" });
 });
 
 router.get('/30days', function(req, res, next) {
