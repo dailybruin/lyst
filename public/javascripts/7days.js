@@ -40,11 +40,11 @@ window.onload = function() {
                             });
     svg.call(pointTip);
 
-    var initial = [];
-    for (var i = 0; i < days.length; i++) {
-      initial.push({date:days[i], '(direct)':0, empty2:0})
-    }
-    render(initial);
+    // var initial = [];
+    // for (var i = 0; i < days.length; i++) {
+    //   initial.push({date:days[i], '(direct)':0, empty2:0})
+    // }
+    // render(initial);
 
     function render(data) {
       color.domain(d3.keys(data[0]).filter(function(key) {
@@ -55,37 +55,28 @@ window.onload = function() {
         var add = 0;
         d.socials = color.domain()
                          .map(function(name) {
-                           if (d[name] != undefined)
+                           if (d[name] != undefined) {
                              add = +d[name];
+                           }
                             return {name: name,
                                     height: add
                               }
                             });
-          d.total += add;
-
+          d.total = 0;
+          d.socials.sort(compare);
       });
       data.forEach(function(d) {
-        if(d.socials.sort(compare)) {
-          console.log(d.socials);
           var y0 = 0;
-          d.socials = color.domain()
-                           .map(function(name) {
-                             var add = 0;
-                              if (d[name]!=undefined) {
-                                add += +d[name];
-                              }
-                              return {name: name,
-                                      height: +d[name],
-                                      y0: y0,
-                                      y1: y0 += add
-                                }
-                              });
-          if (d.socials.length>0) {
-            d.total = d.socials[d.socials.length - 1].y1;
-          }
-      }
+          d.socials.forEach(function(ds) {
+            var add = 0;
+            ds.y0 = y0;
+            y0 += ds.height;
+            ds.y1 = y0;
+            d.total += ds.height;
+          })
+          if (d.total == 0)
+            d.total == 1;
       });
-      // console.log(data);
 
       x.domain(data.map(function(d) { return d.date; }));
       y.domain([0, d3.max(data, function(d) { return d.total; })]);
@@ -112,21 +103,22 @@ window.onload = function() {
         svg.selectAll(".y.axis").transition().duration(1500).call(yAxis);
       }
 
-      var date = svg.selectAll(".state")
+      var date = svg.selectAll(".date")
           .data(data)
         .enter().append("g")
           .attr("class", "g")
           .attr("transform", function(d) { return "translate(" + x(d.date) + ",0)"; });
 
-      date.attr("class", "update")
-                .transition()
-                .duration(1500)
-                .attr("y", function(d) { return y(d.y1); })
-                .attr("height", function(d) { return y(d.y0) - y(d.y1); });
+      var bars = date.selectAll("rect")
+          .data(function(d) { return d.socials; });
 
-      date.selectAll("rect")
-          .data(function(d) { return d.socials.sort(compare); })
-        .enter().append("rect")
+      bars.attr("class", "update")
+                    .transition()
+                    .duration(1500)
+                    .attr("y", 1000)
+                    .attr("height", function(d) { return y(d.y0) - y(d.y1); });
+
+        bars.enter().append("rect")
           .attr("width", x.rangeBand())
           .attr("y", function(d) { return y(d.y1); })
           .attr("height", function(d) { return y(d.y0) - y(d.y1); })
@@ -134,6 +126,7 @@ window.onload = function() {
           .on('mouseover', pointTip.show)
           .on('mouseout', pointTip.hide);
 
+        bars.exit().remove();
     }
 
     function compare(a,b) {
@@ -145,9 +138,11 @@ window.onload = function() {
     }
 
     socket.on('usersvsocial', function (message) {
+        var initial = [];
         var send = [];
         for (var i = 0; i < message.length; i++) {
           var temp = {};
+          var temp2 = {};
           var index = null;
           for (var j = 0; j < send.length; j++) {
             if (send[j].date == days[message[i][1]]) {
@@ -157,12 +152,17 @@ window.onload = function() {
           }
           if (index != null) {
             send[j][message[i][0]] = message[i][2];
+            initial[j][message[i][0]] = "0";
           } else {
             temp.date = days[message[i][1]];
+            temp2.date = days[message[i][1]];
             temp[message[i][0]] = message[i][2];
+            temp2[message[i][0]] = "0";
             send.push(temp);
+            initial.push(temp2);
           }
         }
+        render(initial);
         render(send);
     });
 }
