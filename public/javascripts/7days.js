@@ -112,19 +112,18 @@ window.onload = function() {
       var bars = date.selectAll("rect")
           .data(function(d) { return d.socials; });
 
-      bars.attr("class", "update")
-                    .transition()
-                    .duration(1500)
-                    .attr("y", 1000)
-                    .attr("height", function(d) { return y(d.y0) - y(d.y1); });
-
         bars.enter().append("rect")
           .attr("width", x.rangeBand())
-          .attr("y", function(d) { return y(d.y1); })
-          .attr("height", function(d) { return y(d.y0) - y(d.y1); })
+          .attr("y", function(d) { return y(d.y0); })
+          .attr("height", 0 )
           .style("fill", function(d) { return color(d.name); })
           .on('mouseover', pointTip.show)
           .on('mouseout', pointTip.hide);
+
+          bars.transition()
+              .delay(function(d, i) { return i * 100; })
+              .attr("y", function(d) { return y(d.y1); })
+              .attr("height", function(d) { return y(d.y0) - y(d.y1); });
 
         bars.exit().remove();
     }

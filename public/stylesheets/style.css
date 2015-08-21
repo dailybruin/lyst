@@ -57,6 +57,11 @@ a:hover {
 #area1 td,
 #area2 td {
   padding-bottom: 0.75rem;
+  overflow: scroll;
+}
+
+#area2 td {
+  max-width: 85px;
 }
 
 #area1 td.viewcount,
