@@ -137,7 +137,6 @@ window.onload = function() {
     }
 
     socket.on('usersvsocial', function (message) {
-        var initial = [];
         var send = [];
         for (var i = 0; i < message.length; i++) {
           var temp = {};
@@ -151,17 +150,14 @@ window.onload = function() {
           }
           if (index != null) {
             send[j][message[i][0]] = message[i][2];
-            initial[j][message[i][0]] = "0";
           } else {
             temp.date = days[message[i][1]];
             temp2.date = days[message[i][1]];
             temp[message[i][0]] = message[i][2];
             temp2[message[i][0]] = "0";
             send.push(temp);
-            initial.push(temp2);
           }
         }
-        render(initial);
         render(send);
     });
 }

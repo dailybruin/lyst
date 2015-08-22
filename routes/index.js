@@ -12,7 +12,7 @@ router.get('/7days', function(req, res, next) {
 });
 
 router.get('/30days', function(req, res, next) {
-  res.render('index', { title: "30 days", update: "daily", javascript: "30day.js" });
+  res.render('index', { title: "30 days", update: "daily", javascript: "30days.js" });
 });
 
 router.get('/1year', function(req, res, next) {
@@ -24,7 +24,7 @@ router.get('/realtime', function(req, res, next) {
 });
 
 router.get('/custom', function(req, res, next) {
-  res.render('index', { title: "Custom query", update: "daily", javascript: "custom.js" });
+  res.render('custom', { title: "Custom query", update: "daily", javascript: "custom.js" });
 });
 
 module.exports = router;
