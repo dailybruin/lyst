@@ -1,5 +1,5 @@
 window.onload = function() {
-  var socket = io.connect();
+  var socket = io.connect('http://localhost:3000');
 
   $('#area1').append("<h2>Work in progress</h2>");
 
