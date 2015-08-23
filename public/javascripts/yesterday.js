@@ -1,5 +1,5 @@
 window.onload = function() {
-    var socket = io.connect('http://localhost:3000');
+    var socket = io.connect();
 
     var width = $("body").width(),
     height = 400-37;

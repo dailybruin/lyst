@@ -1,4 +1,6 @@
 window.onload = function() {
+  var socket = io.connect();
+
   $('#area1').append("<h2>Work in progress</h2>");
 
   var margin = {top: 20, right: 20, bottom: 30, left: 40},
@@ -41,7 +43,7 @@ window.onload = function() {
       .style("opacity", 0);
 
   // load data
-  render(data) {
+  function render(data) {
 
     // change string (from CSV) into number format
     data.forEach(function(d) {
@@ -110,7 +112,7 @@ window.onload = function() {
         .text(function(d) { return d;})
   }
 
-  socket.on('sessionsvbouncesvrate', function (message) {
+  socket.on('30daysessionsvbounces', function (message) {
       render(message);
   });
 }
