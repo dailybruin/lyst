@@ -82,7 +82,6 @@ io.on('connection', function (socket) {
 
   makeRequest('30daysessionsvbounces', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICvyIAKDA');
 
-  var CronJob = require('cron').CronJob;
   var job = new CronJob('00 01 00 * * *', function(){
       // Runs every day (Monday through Friday)
       // at 12:00:00 AM.
