@@ -164,4 +164,29 @@ window.onload = function() {
         render(initial);
         render(send);
     });
+
+    socket.on('7daypageviews', function (message) {
+        if (message != undefined) {
+          $("#area1").width('65%');
+          $("#area1").append("<h2>Popular pages</h2>");
+          $("#area1").append("<table></table>");
+          for (var i = 0; i < message.length; i++) {
+            $("#area1 table").append("<tr><td><a href='http://dailybruin.com"+message[i][0]
+              +"'>"+ message[i][1].replace("| Daily Bruin", "")
+              +"</a></td><td class='viewcount'>"+ message[i][2] +"</td></tr>");
+          }
+        }
+    })
+
+    socket.on('7daysearchterms', function (message) {
+        if (message != undefined) {
+          $("#area2").width('25%');
+          $("#area2").append("<h2>Popular search terms</h2>");
+          $("#area2").append("<table></table>");
+          for (var i = 0; i < message.length; i++) {
+            $("#area2 table").append("<tr><td>"+message[i][0]
+              +"</td><td class='viewcount'>"+ message[i][1] +"</td></tr>");
+          }
+        }
+    })
 }
