@@ -10,9 +10,10 @@ var routes = require('./routes/index');
 
 var app = express();
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
 
 server.listen(3000);
+
+var io = require('socket.io')(server);
 
 app.engine('.html', require('ejs').__express);
 // view engine setup
