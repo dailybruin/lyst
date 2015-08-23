@@ -29,3 +29,5 @@ TODO: Write history
 ## License
 
 TODO: Write license
+
+Placeholder favicon by: Icon made by [Amit Jakhu](http://www.amitjakhu.com) from www.flaticon.com is licensed under CC BY 3.0.
