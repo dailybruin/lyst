@@ -78,7 +78,6 @@ io.on('connection', function (socket) {
 
   makeRequest('7daysearchterms','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICZzpQKDA');
 
-  makeRequest('30daysessionsvbounces', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICvyIAKDA');
   //send every hour
   // setInterval(function() {
   //   //24 hour pageviews
