@@ -48,7 +48,10 @@ window.onload = function() {
 
     function render(data) {
       color.domain(d3.keys(data[0]).filter(function(key) {
-                  return key !== "date" && key !== "(not set)"; }));
+                    return key !== "date" &&
+                           key !== "(not set)" &&
+                           key !== "total" &&
+                           key !== "socials"; }));
 
 
       data.forEach(function(d) {
@@ -98,7 +101,7 @@ window.onload = function() {
             .attr("dy", ".71em")
             .style("text-anchor", "end")
             .style("font-size","0.8rem")
-            .text("number of users");
+            .text("number of users per source");
       } else {
         svg.selectAll(".y.axis").transition().duration(1500).call(yAxis);
       }
