@@ -45,36 +45,46 @@ window.onload = function() {
     });
 
     x.domain(d3.extent(data, function(d) { return d.sessions; })).nice();
-    y.domain([d3.extent(data, function(d) { return d.bounces; })[0]-100,
+    y.domain([d3.extent(data, function(d) { return d.bounces; })[0],
               d3.extent(data, function(d) { return d.bounces; })[1]]).nice();
 
-    svg.append("g")
-        .style("font-size","0.8rem")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis)
-      .append("text")
-        .attr("class", "label")
-        .attr("x", width)
-        .attr("y", -6)
-        .style("text-anchor", "end")
-        .text("sessions");
+    if (svg.selectAll(".x.axis")[0].length < 1 ){
+      svg.append("g")
+          .style("font-size","0.8rem")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(xAxis)
+        .append("text")
+          .attr("class", "label")
+          .attr("x", width)
+          .attr("y", -6)
+          .style("text-anchor", "end")
+          .text("sessions");
+    } else {
+        svg.selectAll(".x.axis").transition().duration(1500).call(xAxis);
+    }
 
-    svg.append("g")
-        .style("font-size","0.8rem")
-        .attr("class", "y axis")
-        .call(yAxis)
-      .append("text")
-        .attr("class", "label")
-        .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", ".71em")
-        .style("text-anchor", "end")
-        .text("bounces")
+    if (svg.selectAll(".y.axis")[0].length < 1 ){
+      svg.append("g")
+          .style("font-size","0.8rem")
+          .attr("class", "y axis")
+          .call(yAxis)
+        .append("text")
+          .attr("class", "label")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 6)
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text("bounces");
+    } else {
+        svg.selectAll(".y.axis").transition().duration(1500).call(yAxis);
+    }
+
 
     var dots = svg.selectAll(".dot")
-        .data(data)
-      .enter().append("circle")
+        .data(data);
+
+    dots.enter().append("circle")
         .attr("class", "dot")
         .attr("r", function(d) { return (d.duration/100000);})
         .attr("cx", 0)
@@ -95,6 +105,7 @@ window.onload = function() {
         .attr("cx", function(d) { return x(d.sessions); })
         .attr("cy", function(d) { return y(d.bounces); });
 
+    dots.exit().remove();
     // var legend = svg.selectAll(".legend")
     //     .data(color.domain())
     //   .enter().append("g")
@@ -116,10 +127,13 @@ window.onload = function() {
   }
 
   socket.on('30daysessionsvbounces', function (message) {
+    var initial = [];
     var scatter = [];
     message.forEach(function(m){
+      initial.push({day:0,sessions:0,bounces:0,duration:0});
       scatter.push({day:m[0], sessions:m[1], bounces:m[2], duration:m[3]});
     });
+    render(initial);
     render(scatter);
   });
 }
