@@ -1,62 +1,55 @@
 window.onload = function() {
   var socket = io.connect();
 
-  $('#area1').append("<h2>Work in progress</h2>");
+  var margin = {top: 20, right: 50, bottom: 30, left: 80},
+    width = $('body').width() - margin.left - margin.right-70,
+    height = 400 - margin.top - margin.bottom;
 
-  var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+  var x = d3.scale.linear()
+      .range([0, width]);
 
-  /*
-   * value accessor - returns the value to encode for a given data object.
-   * scale - maps value to a visual display encoding, such as a pixel position.
-   * map function - maps from data value to display value
-   * axis - sets up axis
-   */
+  var y = d3.scale.linear()
+      .range([height, 0]);
 
-  // setup x
-  var xValue = function(d) { return d.Calories;}, // data -> value
-      xScale = d3.scale.linear().range([0, width]), // value -> display
-      xMap = function(d) { return xScale(xValue(d));}, // data -> display
-      xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+  var color = d3.scale.category10();
 
-  // setup y
-  var yValue = function(d) { return d["Protein (g)"];}, // data -> value
-      yScale = d3.scale.linear().range([height, 0]), // value -> display
-      yMap = function(d) { return yScale(yValue(d));}, // data -> display
-      yAxis = d3.svg.axis().scale(yScale).orient("left");
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
 
-  // setup fill color
-  var cValue = function(d) { return d.Manufacturer;},
-      color = d3.scale.category10();
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left");
 
-  // add the graph canvas to the body of the webpage
   var svg = d3.select("body").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  // add the tooltip area to the webpage
-  var tooltip = d3.select("body").append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0);
+  var pointTip = d3.tip()
+                  .attr('class', 'point-tip')
+                  .html(function(d) {
+                        return  "<p>Day: " + d.day + "</p> "
+                            + "<p>Sessions: " +d.sessions + "</p> "
+                            + "<p>Bounces: " +d.bounces +"</p>";
+                          });
 
-  // load data
+  svg.call(pointTip);
+
   function render(data) {
-
-    // change string (from CSV) into number format
     data.forEach(function(d) {
-      d.Calories = +d.Calories;
-      d["Protein (g)"] = +d["Protein (g)"];
+      d.sessions = +d.sessions;
+      d.bounces = +d.bounces;
+      d.duration = +d.duration;
     });
 
-    // don't want dots overlapping axis, so add in buffer to data domain
-    xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
-    yScale.domain([d3.min(data, yValue)-1, d3.max(data, yValue)+1]);
+    x.domain(d3.extent(data, function(d) { return d.sessions; })).nice();
+    y.domain([d3.extent(data, function(d) { return d.bounces; })[0]-100,
+              d3.extent(data, function(d) { return d.bounces; })[1]]).nice();
 
-    // x-axis
     svg.append("g")
+        .style("font-size","0.8rem")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis)
@@ -65,10 +58,10 @@ window.onload = function() {
         .attr("x", width)
         .attr("y", -6)
         .style("text-anchor", "end")
-        .text("Calories");
+        .text("sessions");
 
-    // y-axis
     svg.append("g")
+        .style("font-size","0.8rem")
         .attr("class", "y axis")
         .call(yAxis)
       .append("text")
@@ -77,42 +70,56 @@ window.onload = function() {
         .attr("y", 6)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Protein (g)");
+        .text("bounces")
 
-    // draw dots
-    svg.selectAll(".dot")
+    var dots = svg.selectAll(".dot")
         .data(data)
       .enter().append("circle")
         .attr("class", "dot")
-        .attr("r", 3.5)
-        .attr("cx", xMap)
-        .attr("cy", yMap)
-        .style("fill", function(d) { return color(cValue(d));});
+        .attr("r", function(d) { return (d.duration/100000);})
+        .attr("cx", 0)
+        .attr("cy", height)
+        .attr("opacity", 0.7)
+        .style("fill", function(d) { return color(d.day); })
+        .on("mouseover", function(d) {
+            pointTip.show(d);
+            d3.select(this).attr("opacity", 1);
+        })
+        .on("mouseout", function(d) {
+            pointTip.hide(d);
+            d3.select(this).attr("opacity", 0.7);
+        });
 
-    // draw legend
-    var legend = svg.selectAll(".legend")
-        .data(color.domain())
-      .enter().append("g")
-        .attr("class", "legend")
-        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+    dots.transition().duration(1500)
+        .attr("r", function(d) { return (d.duration/100000)*2;})
+        .attr("cx", function(d) { return x(d.sessions); })
+        .attr("cy", function(d) { return y(d.bounces); });
 
-    // draw legend colored rectangles
-    legend.append("rect")
-        .attr("x", width - 18)
-        .attr("width", 18)
-        .attr("height", 18)
-        .style("fill", color);
-
-    // draw legend text
-    legend.append("text")
-        .attr("x", width - 24)
-        .attr("y", 9)
-        .attr("dy", ".35em")
-        .style("text-anchor", "end")
-        .text(function(d) { return d;})
+    // var legend = svg.selectAll(".legend")
+    //     .data(color.domain())
+    //   .enter().append("g")
+    //     .attr("class", "legend")
+    //     .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+    //
+    // legend.append("rect")
+    //     .attr("x", width - 18)
+    //     .attr("width", 18)
+    //     .attr("height", 18)
+    //     .style("fill", color);
+    //
+    // legend.append("text")
+    //     .attr("x", width - 24)
+    //     .attr("y", 9)
+    //     .attr("dy", ".35em")
+    //     .style("text-anchor", "end")
+    //     .text(function(d) { return d; });
   }
 
   socket.on('30daysessionsvbounces', function (message) {
-      render(message);
+    var scatter = [];
+    message.forEach(function(m){
+      scatter.push({day:m[0], sessions:m[1], bounces:m[2], duration:m[3]});
+    });
+    render(scatter);
   });
 }

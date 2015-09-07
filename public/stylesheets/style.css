@@ -89,7 +89,7 @@ a:hover {
 
 .axis.x path.domain,
 .x .tick line {
-  stroke:none;
+  //stroke:none;
 }
 
 .point-tip {

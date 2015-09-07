@@ -110,7 +110,7 @@ window.onload = function() {
         lines.transition().duration(1500)
             .attr("d",line);
 
-       var colors = ["#3E92CC", "#2A628F", "#13293D"];
+       var colors = ["#3E92CC", "#2A628F", "#43217A"];
         lines.enter()
             .append("path")
             .attr("class","line")
