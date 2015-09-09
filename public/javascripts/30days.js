@@ -129,8 +129,8 @@ window.onload = function() {
   socket.on('30daysessionsvbounces', function (message) {
     var initial = [];
     var scatter = [];
-    message.forEach(function(m){
-      initial.push({day:0,sessions:0,bounces:0,duration:0});
+    message.forEach(function(m, i){
+      initial.push({day:m[0],sessions:0,bounces:0,duration:0});
       scatter.push({day:m[0], sessions:m[1], bounces:m[2], duration:m[3]});
     });
     render(initial);
