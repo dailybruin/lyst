@@ -80,7 +80,39 @@ app.use(function(err, req, res, next) {
   });
 });
 
+var customLimit = 100;
+
 io.on('connection', function (socket) {
+
+  socket.on('custom', function (message) {
+    if (message.initial) {
+      socket.emit("customresponse", {result: false, error: false, limit: customLimit})
+    }
+    else if (customLimit > 0) {
+      customLimit--;
+      authClient.authorize(function(err, tokens) {
+        	if (err) {
+        		console.log(err);
+        		return;
+        	}
+        	analytics.data.ga.get({
+        		auth: authClient,
+        		'ids': 'ga:44280059',
+        		'start-date': message['startdate'],
+        		'end-date': message['enddate'],
+        		'metrics': message['metrics'],
+            'dimensions': message['dimensions']
+        	}, function(err, result) {
+            if (err) {
+              console.log(err.toString());
+              socket.emit("customresponse", {result: false, limit: customLimit, error: err.toString()});
+              return;
+            }
+            socket.emit("customresponse", {result: result["rows"], limit: customLimit, error: false});
+        	});
+      });
+    }
+  })
 
   authClient.authorize(function(err, tokens) {
     	if (err) {
@@ -92,7 +124,8 @@ io.on('connection', function (socket) {
     		'ids': 'ga:44280059',
     		'start-date': '2daysAgo',
     		'end-date': 'yesterday',
-    		'metrics': 'ga:sessions'
+    		'metrics': 'ga:sessions',
+        'dimensions': 'ga:date'
     	}, function(err, result) {
         if (err) {
           console.log(err);
@@ -120,6 +153,9 @@ io.on('connection', function (socket) {
   var job = new CronJob('00 01 00 * * *', function(){
       // Runs every day (Monday through Friday)
       // at 12:00:00 AM.
+      //set custom limit to 100
+      customLimit = 100;
+
       makeRequest('pageviews','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIC6qI4KDA');
       //24 hour user by hour
       makeRequest('users','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICZ0oUKDA');

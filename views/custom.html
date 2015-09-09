@@ -1,26 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title><%- title %></title>
+<head>
+    <title>lyst | Daily Bruin - <%- title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css'/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
-  </head>
+    <link rel="icon" href="/images/favicon.ico">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.min.js"></script>
+</head>
   <body>
     <header>
       <ul>
         <li class="title">lyst</li>
+        <li><a href="/realtime">Real time</a></li>
         <li><a href="/">Yesterday</a></li>
         <li><a href="/7days">7 days</a></li>
         <li><a href="/30days">30 days</a></li>
         <li><a href="/1year">1 year</a></li>
-        <li><a href="/realtime">Real time</a></li>
         <li><a href="/custom">Custom query</a></li>
       </ul>
     </header>
     <h1 class="title"><%- title %></h1>
-    <h2>Work in progress</h2>
-    <input type="text"></input>
+    <div></div>
+    <div id="area1">
+      <label>Start date</label>
+      <input id="start"></input>
+      <label>End date</label>
+      <input id="end"></input>
+      <label>Metrics</label>
+      <input id="metrics"></input>
+      <label>Dimensions</label>
+      <input id="dimensions"></input>
+      <button onclick="customQuery()">Submit</button>
+      <p class="limit"><span></span> queries left today</p>
+      <p class="error"></p>
+    </div>
+    <div id="area2">
+    </div>
   </body>
   <script>
+    var customLimit;
+    var socket = io.connect();
+    $("#area1").width('25%');
+    $("#area2").width('65%');
+    socket.emit("custom", {initial:true});
+
+    function customQuery() {
+      if (customLimit && customLimit > 0) {
+        socket.emit("custom", { startdate: $("#start").val(),
+                              enddate: $("#end").val(),
+                              metrics: $("#metrics").val(),
+                              dimensions: $("#dimensions").val()
+                            });
+      } else {
+        $(".error").text("Daily query quota reached");
+      }
+    }
+
+    socket.on('customresponse', function (message) {
+      customLimit = message["limit"];
+      $('.limit span').text(message["limit"]);
+      if (message["error"]) {
+        console.log(message["error"]);
+        $('#area2').html("<p class='error'>"+message["error"]+"</p>");
+      } else if (message["result"]) {
+        $('#area2').html("<p>"+message["result"].toString()+"</p>");
+      }
+    });
   </script>
 </html>

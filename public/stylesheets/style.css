@@ -123,3 +123,50 @@ a:hover {
   top: 100%;
   left: 0;
 }
+
+.custom {
+  width: 20rem;
+  margin-left: 50px;
+}
+
+label {
+  display: block;
+  margin: 1rem 0;
+}
+
+input {
+  padding: 0.2rem 0;
+  min-width: 99%;
+}
+
+button {
+  margin: 1rem 0;
+  background-color: #008CBA;
+  border-color: #007095;
+  color: #FFFFFF;
+  padding: 0.58889rem 1.77778rem 0.64444rem 1.77778rem;
+  border-radius: 0;
+  border-style: solid;
+  border-width: 0;
+  font-size: 0.88889rem;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #007095;
+  cursor: pointer;
+  transition: background-color 300ms ease-out;
+}
+
+p.limit {
+  text-align: right;
+}
+
+p.limit span {
+  font-weight: bold;
+  color: green;
+}
+
+p.error {
+  color: red;
+}
