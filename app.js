@@ -14,6 +14,20 @@ var io = require('socket.io')(server);
 
 var CronJob = require('cron').CronJob;
 
+var googleapis = require('googleapis'),
+	JWT = googleapis.auth.JWT,
+	analytics = googleapis.analytics('v3');
+
+var SERVICE_ACCOUNT_EMAIL = '211839318900-57ulskbmk7nkq9bccf8cmi1flkuo8232@developer.gserviceaccount.com';
+var SERVICE_ACCOUNT_KEY_FILE = 'key.pem';
+
+var authClient = new JWT(
+	SERVICE_ACCOUNT_EMAIL,
+	SERVICE_ACCOUNT_KEY_FILE,
+	null,
+	['https://www.googleapis.com/auth/analytics.readonly']
+);
+
 server.listen(3000);
 
 app.engine('.html', require('ejs').__express);
@@ -67,6 +81,27 @@ app.use(function(err, req, res, next) {
 });
 
 io.on('connection', function (socket) {
+
+  authClient.authorize(function(err, tokens) {
+    	if (err) {
+    		console.log(err);
+    		return;
+    	}
+    	analytics.data.ga.get({
+    		auth: authClient,
+    		'ids': 'ga:44280059',
+    		'start-date': '2daysAgo',
+    		'end-date': 'yesterday',
+    		'metrics': 'ga:sessions'
+    	}, function(err, result) {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        socket.emit("realtime", result["rows"]);
+    	});
+  });
+
   //24 hour pageviews
   makeRequest('pageviews','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIC6qI4KDA');
   //24 hour user by hour
