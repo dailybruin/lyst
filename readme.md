@@ -6,7 +6,7 @@ A public realtime Google Analytics dashboard
 
 TODO: Update this
 
-1. Set up Google superproxy for your site
+1. Set up [Google superproxy](https://github.com/googleanalytics/google-analytics-super-proxy) for your site
 2. Set up lyst application
 3. Update query URLs
 
