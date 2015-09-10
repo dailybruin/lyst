@@ -189,7 +189,7 @@ window.onload = function() {
 
   socket.on('realtimeStats', function (message) {
     if (message != undefined) {
-      $("#area1").width('65%');
+      $("#area1").width('60%');
       $("#area1").html("<h2>Active page views</h2>");
       $("#area1").append("<table></table>");
 
