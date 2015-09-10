@@ -91,7 +91,9 @@ window.onload = function() {
 
       var xAxis = d3.svg.axis()
           .scale(x)
-          .orient("bottom");
+          .orient("bottom")
+          .tickFormat(function(d) { return 30-d*30; })
+          .tickValues(d3.range(0, 1, 0.1));
 
       // create axis scale
       var yAxis = d3.svg.axis()
@@ -100,7 +102,7 @@ window.onload = function() {
       if (svg.selectAll(".x.axis")[0].length < 1 ){
         svg.append("g")
             .style("font-size","0.8rem")
-            .attr("class", "x axis noticks")
+            .attr("class", "x axis")
             .attr("transform", "translate(0," + (height - margin.top - margin.bottom) + ")")
             .call(xAxis)
           .append("text")
@@ -108,7 +110,7 @@ window.onload = function() {
             .attr("x", width - 70)
             .attr("y", -6)
             .style("text-anchor", "end")
-            .text("updates every 10 sec for last 30 min");
+            .text("minutes ago");
       } else {
           svg.selectAll(".x.axis").transition().duration(1500).call(xAxis);
           svg.selectAll(".x.label").transition().duration(1500).attr("x", width-70);
@@ -155,35 +157,26 @@ window.onload = function() {
       lines.exit()
           .remove();
 
-    for (var i = 0; i < pointList.length; i++) {
-      var points = svg.selectAll(".point"+i)
-            .data(pointList[i]);
-      points.attr("class", "update point"+i)
-            .transition()
-            .duration(1500)
-            .attr("cx", function(d) { return x(d.x); })
-            .attr("cy", function(d) { return y(d.y); });
+    svg.selectAll(".legend").remove();
+    var legend = svg.append("g")
+        .attr("class", "legend")
+        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
-      points.enter().append("circle")
-        .attr("class", "enter point"+i)
-        .attr("r", 5)
-        .attr("opacity", 0.7)
-        .attr("fill", "#43217A")
-        .attr("cx", function(d) { return x(d.x); })
-        .attr("cy", function(d) { return y(d.y); })
-        .attr("name", "test")
-        .on('mouseover', function(d) {
-                        pointTip.show(d);
-                        d3.select(this).attr("opacity", 1);
-                      })
-        .on('mouseout', function(d) {
-                        pointTip.hide(d);
-                        d3.select(this).attr("opacity", 0.7);
-                      });
+    legend.append("text")
+        .attr("x", width - 133)
+        .attr("y", 5)
+        .attr("dy", ".35em")
+        .attr("fill", "#6207C4")
+        .style("font-size", "3rem")
+        .style("text-anchor", "end")
+        .text(data[0][data[0].length-1].y);
 
-      points.exit()
-            .remove();
-    }
+    legend.append("text")
+        .attr("x", width - 100)
+        .attr("y", 45)
+        .attr("dy", ".35em")
+        .style("text-anchor", "end")
+        .text("current active users");
   }
 
   socket.on('realtime', function (message) {

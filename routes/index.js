@@ -4,7 +4,7 @@ var request = require('request');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: "Real time", update: "in real time", javascript: "realtime.js" });
+  res.render('index', { title: "Real time", update: "every 10 seconds", javascript: "realtime.js" });
 });
 
 router.get('/yesterday', function(req, res, next) {
