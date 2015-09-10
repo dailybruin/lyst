@@ -81,6 +81,7 @@ app.use(function(err, req, res, next) {
 });
 
 var customLimit = 100;
+var realtime = [];
 
 io.on('connection', function (socket) {
 
@@ -113,27 +114,44 @@ io.on('connection', function (socket) {
       });
     }
   })
-
-  authClient.authorize(function(err, tokens) {
-    	if (err) {
-    		console.log(err);
-    		return;
-    	}
-    	analytics.data.ga.get({
-    		auth: authClient,
-    		'ids': 'ga:44280059',
-    		'start-date': '2daysAgo',
-    		'end-date': 'yesterday',
-    		'metrics': 'ga:sessions',
-        'dimensions': 'ga:date'
-    	}, function(err, result) {
-        if (err) {
-          console.log(err);
-          return;
+  var realtimejob = new CronJob('0,10,20,30,40,50 * * * * *', function(){
+    authClient.authorize(function(err, tokens) {
+      	if (err) {
+      		console.log(err);
+      		return;
+      	}
+        var d = new Date();
+        //bad fix for node-cron issue
+        if (realtime.length == 0 ||
+            Math.round(d.getTime()/1000) - realtime[realtime.length-1].time > 5) {
+        	analytics.data.realtime.get({
+        		auth: authClient,
+        		'ids': 'ga:44280059',
+        		'metrics': 'rt:activeUsers'
+        	}, function(err, result) {
+            if (err) {
+              console.log(err);
+              return;
+            }
+            if (realtime.length >= 180) {
+              realtime.shift();
+              realtime.forEach(function(r, i) {
+                r.x = i/180;
+              })
+            }
+            realtime.push({x: realtime.length/180,
+                           y: result["rows"][0][0],
+                           time: Math.round(d.getTime()/1000)});
+            console.log(realtime);
+            socket.emit("realtime", realtime);
+        	});
         }
-        socket.emit("realtime", result["rows"]);
-    	});
-  });
+      });
+    },
+    null,
+    true /* Start the job right now */,
+    "America/Los_Angeles" /* Time zone of this job. */
+  );
 
   //24 hour pageviews
   makeRequest('pageviews','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIC6qI4KDA');

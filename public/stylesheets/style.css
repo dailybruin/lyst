@@ -87,9 +87,8 @@ a:hover {
   shape-rendering: crispEdges;
 }
 
-.axis.x path.domain,
-.x .tick line {
-  //stroke:none;
+.x.noticks .tick text {
+  display:none;
 }
 
 .point-tip {
