@@ -81,6 +81,9 @@ app.use(function(err, req, res, next) {
 });
 
 var realtime = [];
+var sources = [];
+var pages = [];
+var searches = [];
 
 setInterval(function(){
   authClient.authorize(function(err, tokens) {
@@ -115,7 +118,6 @@ setInterval(function(){
           io.sockets.emit("realtime", realtime);
 
           //stats
-          var pages = [];
           var pagesBool = true;
 					for (var i = 0; i < result["rows"].length; i++) {
 						for (var j = 0; j < pages.length; j++) {
@@ -135,7 +137,6 @@ setInterval(function(){
 					 	return b.views-a.views;
 				 	});
 
-					var searches = [];
 					var searchesBool = true;
 					for (var i = 0; i < result["rows"].length; i++) {
 						for (var j = 0; j < searches.length; j++) {
@@ -154,7 +155,6 @@ setInterval(function(){
 					 	return b.views-a.views;
 				 	});
 
-					var sources = [];
 					var sourcesBool = true;
 					for (var i = 0; i < result["rows"].length; i++) {
 						for (var j = 0; j < sources.length; j++) {
@@ -172,7 +172,6 @@ setInterval(function(){
 					sources.sort(function(a, b){
 						return b.views-a.views;
 					});
-					console.log(sources);
           io.sockets.emit("realtimeStats", {pageStats: pages,
                                             searchStats: searches,
 																						sourceStats: sources});
@@ -186,6 +185,9 @@ var customLimit = 100;
 io.on('connection', function (socket) {
   socket.on('initialRealtime', function(message) {
     io.sockets.emit("realtime", realtime);
+		io.sockets.emit("realtimeStats", {pageStats: pages,
+																			searchStats: searches,
+																			sourceStats: sources});
   })
 
   socket.on('custom', function (message) {
@@ -263,7 +265,7 @@ io.on('connection', function (socket) {
     request(queryurl, function (error, response, body) {
       if (!error && response.statusCode == 200) {
         result = JSON.parse(body);
-        socket.emit(emitName, result["rows"]);
+        io.sockets.emit(emitName, result["rows"]);
       }
     })
   }
