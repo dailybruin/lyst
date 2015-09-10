@@ -166,7 +166,7 @@ window.onload = function() {
 
       points.enter().append("circle")
         .attr("class", "enter point"+i)
-        .attr("r", 7)
+        .attr("r", 5)
         .attr("opacity", 0.7)
         .attr("fill", "#43217A")
         .attr("cx", function(d) { return x(d.x); })

@@ -114,7 +114,7 @@ io.on('connection', function (socket) {
       });
     }
   })
-  var realtimejob = new CronJob('0,10,20,30,40,50 * * * * *', function(){
+  setInterval(function(){
     authClient.authorize(function(err, tokens) {
       	if (err) {
       		console.log(err);
@@ -147,11 +147,7 @@ io.on('connection', function (socket) {
         	});
         }
       });
-    },
-    null,
-    true /* Start the job right now */,
-    "America/Los_Angeles" /* Time zone of this job. */
-  );
+    }, 10000);
 
   //24 hour pageviews
   makeRequest('pageviews','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIC6qI4KDA');
