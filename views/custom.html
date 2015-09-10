@@ -68,7 +68,7 @@
         console.log(message["error"]);
         $('#area2').html("<p class='error'>"+message["error"]+"</p>");
       } else if (message["result"]) {
-        $('#area2').html("<p>"+message["result"].toString()+"</p>");
+        $('#area2').html("<pre>"+JSON.stringify(message["result"],undefined,4)+"</pre>");
       }
     });
   </script>

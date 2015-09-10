@@ -225,7 +225,7 @@ io.on('connection', function (socket) {
               socket.emit("customresponse", {result: false, limit: customLimit, error: err.toString()});
               return;
             }
-            socket.emit("customresponse", {result: result["rows"], limit: customLimit, error: false});
+            socket.emit("customresponse", {result: result, limit: customLimit, error: false});
         	});
       });
     }
