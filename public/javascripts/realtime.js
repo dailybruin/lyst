@@ -187,9 +187,38 @@ window.onload = function() {
   }
 
   socket.on('realtime', function (message) {
-    console.log(message);
     if (message != undefined) {
       render([message]);
+    }
+  });
+
+  socket.on('realtimeStats', function (message) {
+    if (message != undefined) {
+      $("#area1").width('65%');
+      $("#area1").html("<h2>Active page views</h2>");
+      $("#area1").append("<table></table>");
+
+      for (var i = 0; i < message["pageStats"].length; i++) {
+        $("#area1 table").append("<tr><td><a href='http://dailybruin.com"
+          + message["pageStats"][i].path +"'>"
+          + message["pageStats"][i].title.replace("| Daily Bruin", "")
+          +"</a></td><td class='viewcount'>"+ message["pageStats"][i].views +"</td></tr>");
+      }
+
+      $("#area2").width('25%');
+      $("#area2").html("<h2>Active search terms</h2>");
+      $("#area2").append("<table></table>");
+      for (var i = 0; i < message["searchStats"].length; i++) {
+        $("#area2 table").append("<tr><td>"+message["searchStats"][i].word
+          +"</td><td class='viewcount'>"+ message["searchStats"][i].views +"</td></tr>");
+      }
+
+      $("#area2").append("<h2>Active sources</h2>");
+      $("#area2").append("<table class='sources'></table>");
+      for (var i = 0; i < message["sourceStats"].length; i++) {
+        $("#area2 table.sources").append("<tr><td>"+message["sourceStats"][i].source
+          +"</td><td class='viewcount'>"+ message["sourceStats"][i].views +"</td></tr>");
+      }
     }
   });
 

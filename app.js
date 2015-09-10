@@ -95,7 +95,9 @@ setInterval(function(){
         analytics.data.realtime.get({
           auth: authClient,
           'ids': 'ga:44280059',
-          'metrics': 'rt:activeUsers'
+          'metrics': 'rt:activeUsers',
+          'dimensions': 'rt:keyword, rt:source, rt:pageTitle, rt:pagePath',
+          'sort': '-rt:activeUsers'
         }, function(err, result) {
           if (err) {
             console.log(err);
@@ -108,10 +110,72 @@ setInterval(function(){
             })
           }
           realtime.push({x: realtime.length/180,
-                         y: result["rows"][0][0],
+                         y: +result["totalsForAllResults"]["rt:activeUsers"],
                          time: Math.round(d.getTime()/1000)});
-          console.log(realtime);
           io.sockets.emit("realtime", realtime);
+
+          //stats
+          var pages = [];
+          var pagesBool = true;
+					for (var i = 0; i < result["rows"].length; i++) {
+						for (var j = 0; j < pages.length; j++) {
+							if (pages[j].title === result["rows"][i][2]) {
+								pages[j].views += +result["rows"][i][4];
+								pagesBool = false;
+							}
+						}
+						if (pagesBool) {
+							pages.push({title: result["rows"][i][2],
+													path: result["rows"][i][3],
+													views: +result["rows"][i][4]});
+						}
+						pagesBool = true;
+					}
+					pages.sort(function(a, b){
+					 	return b.views-a.views;
+				 	});
+
+					var searches = [];
+					var searchesBool = true;
+					for (var i = 0; i < result["rows"].length; i++) {
+						for (var j = 0; j < searches.length; j++) {
+							if (searches[j].word === result["rows"][i][0]) {
+								searches[j].views += +result["rows"][i][4];
+								searchesBool = false;
+							}
+						}
+						if (searchesBool) {
+							searches.push({word: result["rows"][i][0],
+													views: +result["rows"][i][4]});
+						}
+						searchesBool = true;
+					}
+					searches.sort(function(a, b){
+					 	return b.views-a.views;
+				 	});
+
+					var sources = [];
+					var sourcesBool = true;
+					for (var i = 0; i < result["rows"].length; i++) {
+						for (var j = 0; j < sources.length; j++) {
+							if (sources[j].source === result["rows"][i][1]) {
+								sources[j].views += +result["rows"][i][4];
+								sourcesBool = false;
+							}
+						}
+						if (sourcesBool) {
+							sources.push({source: result["rows"][i][1],
+													views: +result["rows"][i][4]});
+						}
+						sourcesBool = true;
+					}
+					sources.sort(function(a, b){
+						return b.views-a.views;
+					});
+					console.log(sources);
+          io.sockets.emit("realtimeStats", {pageStats: pages,
+                                            searchStats: searches,
+																						sourceStats: sources});
         });
       }
     });
