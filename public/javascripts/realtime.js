@@ -157,26 +157,28 @@ window.onload = function() {
       lines.exit()
           .remove();
 
-    svg.selectAll(".legend").remove();
-    var legend = svg.append("g")
-        .attr("class", "legend")
-        .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+    if (data[0][data[0].length-1]) {
+        svg.selectAll(".legend").remove();
+        var legend = svg.append("g")
+            .attr("class", "legend")
+            .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
 
-    legend.append("text")
-        .attr("x", width - 133)
-        .attr("y", 5)
-        .attr("dy", ".35em")
-        .attr("fill", "#6207C4")
-        .style("font-size", "3rem")
-        .style("text-anchor", "end")
-        .text(data[0][data[0].length-1].y);
+        legend.append("text")
+            .attr("x", width - 135)
+            .attr("y", 5)
+            .attr("dy", ".35em")
+            .attr("fill", "#6207C4")
+            .style("font-size", "3rem")
+            .style("text-anchor", "middle")
+            .text(data[0][data[0].length-1].y);
 
-    legend.append("text")
-        .attr("x", width - 100)
-        .attr("y", 45)
-        .attr("dy", ".35em")
-        .style("text-anchor", "end")
-        .text("current active users");
+        legend.append("text")
+            .attr("x", width - 140)
+            .attr("y", 45)
+            .attr("dy", ".35em")
+            .style("text-anchor", "middle")
+            .text("current active users");
+    }
   }
 
   socket.on('realtime', function (message) {
