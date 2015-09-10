@@ -108,7 +108,7 @@ window.onload = function() {
             .attr("x", width - 70)
             .attr("y", -6)
             .style("text-anchor", "end")
-            .text("updates every 10 sec for 30 min");
+            .text("updates every 10 sec for last 30 min");
       } else {
           svg.selectAll(".x.axis").transition().duration(1500).call(xAxis);
           svg.selectAll(".x.label").transition().duration(1500).attr("x", width-70);
@@ -187,8 +187,11 @@ window.onload = function() {
   }
 
   socket.on('realtime', function (message) {
+    console.log(message);
     if (message != undefined) {
       render([message]);
     }
-  })
+  });
+
+  socket.emit("initialRealtime", {});
 }

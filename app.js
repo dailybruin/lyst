@@ -80,10 +80,49 @@ app.use(function(err, req, res, next) {
   });
 });
 
-var customLimit = 100;
 var realtime = [];
 
+setInterval(function(){
+  authClient.authorize(function(err, tokens) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      var d = new Date();
+      //bad fix for node-cron issue
+      if (realtime.length == 0 ||
+          Math.round(d.getTime()/1000) - realtime[realtime.length-1].time > 7) {
+        analytics.data.realtime.get({
+          auth: authClient,
+          'ids': 'ga:44280059',
+          'metrics': 'rt:activeUsers'
+        }, function(err, result) {
+          if (err) {
+            console.log(err);
+            return;
+          }
+          if (realtime.length >= 180) {
+            realtime.shift();
+            realtime.forEach(function(r, i) {
+              r.x = i/180;
+            })
+          }
+          realtime.push({x: realtime.length/180,
+                         y: result["rows"][0][0],
+                         time: Math.round(d.getTime()/1000)});
+          console.log(realtime);
+          io.sockets.emit("realtime", realtime);
+        });
+      }
+    });
+  }, 10000);
+
+var customLimit = 100;
+
 io.on('connection', function (socket) {
+  socket.on('initialRealtime', function(message) {
+    io.sockets.emit("realtime", realtime);
+  })
 
   socket.on('custom', function (message) {
     if (message.initial) {
@@ -114,40 +153,6 @@ io.on('connection', function (socket) {
       });
     }
   })
-  setInterval(function(){
-    authClient.authorize(function(err, tokens) {
-      	if (err) {
-      		console.log(err);
-      		return;
-      	}
-        var d = new Date();
-        //bad fix for node-cron issue
-        if (realtime.length == 0 ||
-            Math.round(d.getTime()/1000) - realtime[realtime.length-1].time > 5) {
-        	analytics.data.realtime.get({
-        		auth: authClient,
-        		'ids': 'ga:44280059',
-        		'metrics': 'rt:activeUsers'
-        	}, function(err, result) {
-            if (err) {
-              console.log(err);
-              return;
-            }
-            if (realtime.length >= 180) {
-              realtime.shift();
-              realtime.forEach(function(r, i) {
-                r.x = i/180;
-              })
-            }
-            realtime.push({x: realtime.length/180,
-                           y: result["rows"][0][0],
-                           time: Math.round(d.getTime()/1000)});
-            console.log(realtime);
-            socket.emit("realtime", realtime);
-        	});
-        }
-      });
-    }, 10000);
 
   //24 hour pageviews
   makeRequest('pageviews','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIC6qI4KDA');
