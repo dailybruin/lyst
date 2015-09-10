@@ -115,12 +115,8 @@ window.onload = function() {
             .append("path")
             .attr("class","line")
             .attr("d",line)
-            .style("stroke", function(){
-                if (colors.length>0) {
-                  return colors.shift();
-                } else {
-                  return '#'+Math.floor(Math.random()*16777215).toString(16);
-                }
+            .style("stroke", function(d,i){
+                  return colors[i];
               });
 
         lines.exit()
@@ -137,12 +133,20 @@ window.onload = function() {
 
         points.enter().append("circle")
           .attr("class", "enter point"+i)
-      		.attr("r", 3)
+      		.attr("r", 5)
+          .attr("opacity", 0.7)
+          .attr("fill", colors[i])
       		.attr("cx", function(d) { return x(d.x); })
       		.attr("cy", function(d) { return y(d.y); })
           .attr("name", "test")
-          .on('mouseover', pointTip.show)
-          .on('mouseout', pointTip.hide);
+          .on('mouseover', function(d) {
+                          pointTip.show(d);
+                          d3.select(this).attr("opacity", 1);
+                        })
+          .on('mouseout', function(d) {
+                          pointTip.hide(d);
+                          d3.select(this).attr("opacity", 0.7);
+                        });
 
         points.exit()
               .remove();
