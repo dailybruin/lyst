@@ -95,6 +95,9 @@ setInterval(function(){
       //bad fix for node-cron issue
       if (realtime.length == 0 ||
           Math.round(d.getTime()/1000) - realtime[realtime.length-1].time > 7) {
+				sources = [];
+				pages = [];
+				searches = [];
         analytics.data.realtime.get({
           auth: authClient,
           'ids': 'ga:44280059',
