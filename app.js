@@ -114,10 +114,18 @@ setInterval(function(){
             realtime.forEach(function(r, i) {
               r.x = i/180;
             })
-          }
-          realtime.push({x: realtime.length/180,
-                         y: +result["totalsForAllResults"]["rt:activeUsers"],
-                         time: Math.round(d.getTime()/1000)});
+	          realtime.push({x: realtime.length/180,
+	                         y: +result["totalsForAllResults"]["rt:activeUsers"],
+	                         time: Math.round(d.getTime()/1000)});
+					} else {
+						var rlength = 180-realtime.length;
+						realtime.forEach(function(r, i) {
+              r.x = (rlength+i)/180;
+            })
+						realtime.push({x: 1,
+	                         y: +result["totalsForAllResults"]["rt:activeUsers"],
+	                         time: Math.round(d.getTime()/1000)});
+					}
           io.sockets.emit("realtime", realtime);
 
           //stats
