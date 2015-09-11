@@ -24,6 +24,6 @@ TODO: Write history
 
 ## License
 
-TODO: Write license
+lyst is released under GNU AGPLv3. See [LICENSE](https://github.com/nbedi/lyst/blob/master/LICENSE) for more details
 
 Placeholder favicon by: Icon made by [Amit Jakhu](http://www.amitjakhu.com) from www.flaticon.com is licensed under CC BY 3.0.
