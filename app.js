@@ -14,6 +14,8 @@ var io = require('socket.io')(server);
 
 var CronJob = require('cron').CronJob;
 
+var requests = require('./requests.json');
+
 var googleapis = require('googleapis'),
 	JWT = googleapis.auth.JWT,
 	analytics = googleapis.analytics('v3');
@@ -100,7 +102,7 @@ setInterval(function(){
 				searches = [];
         analytics.data.realtime.get({
           auth: authClient,
-          'ids': 'ga:44280059',
+          'ids': requests['viewid'],
           'metrics': 'rt:activeUsers',
           'dimensions': 'rt:keyword, rt:source, rt:pageTitle, rt:pagePath',
           'sort': '-rt:activeUsers'
@@ -214,7 +216,7 @@ io.on('connection', function (socket) {
         	}
         	analytics.data.ga.get({
         		auth: authClient,
-        		'ids': 'ga:44280059',
+        		'ids': requests['viewid'],
         		'start-date': message['startdate'],
         		'end-date': message['enddate'],
         		'metrics': message['metrics'],
@@ -231,60 +233,23 @@ io.on('connection', function (socket) {
     }
   })
 
-  //24 hour pageviews
-  makeRequest('pageviews','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIC6qI4KDA');
-  //24 hour user by hour
-  makeRequest('users','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICZ0oUKDA');
-  //24 hour search terms
-  makeRequest('searchterms','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIDejJAKDA');
-  //7 day users v social network
-  makeRequest('usersvsocial', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgID4lpUKDA');
-
-  makeRequest('7daypageviews','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgID4iYwKDA');
-
-  makeRequest('7daysearchterms','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICZzpQKDA');
-
-  makeRequest('30daysessionsvbounces', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICvyIAKDA');
-
-	makeRequest('30toppages', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICA8ogKDA');
-
-	makeRequest('30searchterms', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIDrop4KDA');
-
-	makeRequest('365sessionsvbounces', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIDepYUKDA');
-
-	makeRequest('365toppages', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICr75YJDA');
-
-	makeRequest('365searchterms', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIC6jYkKDA');
-
+	for (var r in requests) {
+		if (requests.hasOwnProperty(r) && r != 'viewid') {
+			makeRequest(r, requests[r]);
+		}
+	}
+	
   var job = new CronJob('00 01 00 * * *', function(){
       // Runs every day (Monday through Friday)
       // at 12:00:00 AM.
       //set custom limit to 100
       customLimit = 100;
 
-      makeRequest('pageviews','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIC6qI4KDA');
-      //24 hour user by hour
-      makeRequest('users','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICZ0oUKDA');
-      //24 hour search terms
-      makeRequest('searchterms','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIDejJAKDA');
-      //7 day users v social network
-      makeRequest('usersvsocial', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgID4lpUKDA');
-
-      makeRequest('7daypageviews','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgID4iYwKDA');
-
-      makeRequest('7daysearchterms','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICZzpQKDA');
-
-      makeRequest('30daysessionsvbounces', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICvyIAKDA');
-			
-			makeRequest('30toppages', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICA8ogKDA');
-			
-			makeRequest('30searchterms', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIDrop4KDA');
-			
-			makeRequest('365sessionsvbounces', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIDepYUKDA');
-    
-			makeRequest('365toppages', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICr75YJDA');
-		
-			makeRequest('365searchterms', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIC6jYkKDA');
+			for (var r in requests) {
+				if (requests.hasOwnProperty(r) && r != 'viewid') {
+					makeRequest(r, requests[r]);
+				}
+			}
 		},
     null,
     true /* Start the job right now */,

@@ -8,11 +8,7 @@ TODO: Update this
 
 1. Set up [Google superproxy](https://github.com/googleanalytics/google-analytics-super-proxy) for your site
 2. Set up lyst application
-3. Update query URLs
-
-## Usage
-
-TODO: Write usage instructions
+3. Update viewid and query URLs in [requests.json](https://github.com/nbedi/lyst/blob/master/requests.json)
 
 ## Contributing
 
