@@ -156,7 +156,7 @@ window.onload = function() {
     socket.on('pageviews', function (message) {
         if (message != undefined) {
           $("#area1").width('65%');
-          $("#area1").append("<h2>Popular pages</h2>");
+          $("#area1").html("<h2>Popular pages</h2>");
           $("#area1").append("<table></table>");
           for (var i = 0; i < message.length; i++) {
             $("#area1 table").append("<tr><td><a href='http://dailybruin.com"+message[i][0]
@@ -169,7 +169,7 @@ window.onload = function() {
     socket.on('searchterms', function (message) {
         if (message != undefined) {
           $("#area2").width('25%');
-          $("#area2").append("<h2>Popular search terms</h2>");
+          $("#area2").html("<h2>Popular search terms</h2>");
           $("#area2").append("<table></table>");
           for (var i = 0; i < message.length; i++) {
             $("#area2 table").append("<tr><td>"+message[i][0]

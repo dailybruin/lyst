@@ -246,6 +246,12 @@ io.on('connection', function (socket) {
 
   makeRequest('30daysessionsvbounces', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICvyIAKDA');
 
+	makeRequest('30toppages', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICA8ogKDA');
+
+	makeRequest('365sessionsvbounces', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIDepYUKDA');
+
+	makeRequest('365toppages', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICr75YJDA');
+
   var job = new CronJob('00 01 00 * * *', function(){
       // Runs every day (Monday through Friday)
       // at 12:00:00 AM.
@@ -265,7 +271,13 @@ io.on('connection', function (socket) {
       makeRequest('7daysearchterms','https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICZzpQKDA');
 
       makeRequest('30daysessionsvbounces', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICvyIAKDA');
-    },
+			
+			makeRequest('30toppages', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICA8ogKDA');
+			
+			makeRequest('365sessionsvbounces', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgIDepYUKDA');
+    
+			makeRequest('365toppages', 'https://db-superproxy.appspot.com/query?id=ag9zfmRiLXN1cGVycHJveHlyFQsSCEFwaVF1ZXJ5GICAgICr75YJDA');
+		},
     null,
     true /* Start the job right now */,
     "America/Los_Angeles" /* Time zone of this job. */

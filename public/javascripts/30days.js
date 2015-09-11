@@ -1,8 +1,11 @@
 window.onload = function() {
   var socket = io.connect();
+  
+  var duration = 0;
+  var sessions = 0;
 
   var margin = {top: 20, right: 50, bottom: 30, left: 80},
-    width = $('body').width() - margin.left - margin.right-70,
+    width = $('#viz-container').width() - margin.left - margin.right-70,
     height = 400 - margin.top - margin.bottom;
 
   var x = d3.scale.linear()
@@ -21,7 +24,7 @@ window.onload = function() {
       .scale(y)
       .orient("left");
 
-  var svg = d3.select("body").append("svg")
+  var svg = d3.select("#viz-container").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
     .append("g")
@@ -86,14 +89,15 @@ window.onload = function() {
 
     dots.enter().append("circle")
         .attr("class", "dot")
-        .attr("r", function(d) { return (d.duration/100000);})
+        .attr("r", '0')
         .attr("cx", 0)
-        .attr("cy", height)
-        .attr("opacity", 0.7)
-        .style("fill", function(d) { return color(d.day); })
+        .attr("cy", height/2)
+        .attr("opacity", 0.5)
+        .style("fill", "#6207C4")
         .on("mouseover", function(d) {
             pointTip.show(d);
-            d3.select(this).attr("opacity", 1);
+            d3.select(this)
+                .attr("opacity", 1);
         })
         .on("mouseout", function(d) {
             pointTip.hide(d);
@@ -101,29 +105,37 @@ window.onload = function() {
         });
 
     dots.transition().duration(1500)
-        .attr("r", function(d) { return (d.duration/100000)*2;})
+        .attr("r", '2.5')
         .attr("cx", function(d) { return x(d.sessions); })
+    
+    dots.transition().duration(1500).delay(1500)
+        .attr("r", '5')
         .attr("cy", function(d) { return y(d.bounces); });
 
     dots.exit().remove();
-    // var legend = svg.selectAll(".legend")
-    //     .data(color.domain())
-    //   .enter().append("g")
-    //     .attr("class", "legend")
-    //     .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-    //
-    // legend.append("rect")
-    //     .attr("x", width - 18)
-    //     .attr("width", 18)
-    //     .attr("height", 18)
-    //     .style("fill", color);
-    //
-    // legend.append("text")
-    //     .attr("x", width - 24)
-    //     .attr("y", 9)
-    //     .attr("dy", ".35em")
-    //     .style("text-anchor", "end")
-    //     .text(function(d) { return d; });
+    
+    if (data) {
+        svg.selectAll(".legend").remove();
+        var legend = svg.append("g")
+            .attr("class", "legend")
+            .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+        legend.append("text")
+            .attr("x", width - 140)
+            .attr("y", height-100)
+            .attr("dy", ".35em")
+            .attr("fill", "#6207C4")
+            .style("font-size", "3.5rem")
+            .style("text-anchor", "middle")
+            .text(duration);
+
+        legend.append("text")
+            .attr("x", width - 140)
+            .attr("y", height-50)
+            .attr("dy", ".35em")
+            .style("text-anchor", "middle")
+            .text("avg. session duration (in sec)");
+    }
   }
 
   socket.on('30daysessionsvbounces', function (message) {
@@ -132,8 +144,25 @@ window.onload = function() {
     message.forEach(function(m, i){
       initial.push({day:m[0],sessions:0,bounces:0,duration:0});
       scatter.push({day:m[0], sessions:m[1], bounces:m[2], duration:m[3]});
+      duration += +m[3];
+      sessions += +m[1];
     });
+    duration = Math.round(duration/sessions*10)/10;
+    console.log(duration);
     render(initial);
     render(scatter);
+  });
+  
+  socket.on('30toppages', function (message) {
+      if (message != undefined) {
+        $("#area1").width('60%');
+        $("#area1").html("<h2>Popular pages</h2>");
+        $("#area1").append("<table></table>");
+        for (var i = 0; i < message.length; i++) {
+          $("#area1 table").append("<tr><td><a href='http://dailybruin.com"+message[i][0]
+            +"'>"+ message[i][1].replace("| Daily Bruin", "")
+            +"</a></td><td class='viewcount'>"+ message[i][2] +"</td></tr>");
+        }
+      }
   });
 }
