@@ -165,4 +165,16 @@ window.onload = function() {
         }
       }
   });
+  
+  socket.on('30searchterms', function (message) {
+      if (message != undefined) {
+        $("#area2").width('25%');
+        $("#area2").html("<h2>Popular search terms</h2>");
+        $("#area2").append("<table></table>");
+        for (var i = 0; i < message.length; i++) {
+          $("#area2 table").append("<tr><td>"+message[i][0]
+            +"</td><td class='viewcount'>"+ message[i][1] +"</td></tr>");
+        }
+      }
+  });
 }
