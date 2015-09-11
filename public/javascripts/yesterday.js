@@ -155,7 +155,7 @@ window.onload = function() {
 
     socket.on('pageviews', function (message) {
         if (message != undefined) {
-          $("#area1").width('65%');
+          $("#area1").width('60%');
           $("#area1").html("<h2>Popular pages</h2>");
           $("#area1").append("<table></table>");
           for (var i = 0; i < message.length; i++) {
