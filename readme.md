@@ -1,6 +1,6 @@
 # lyst
 
-A public realtime Google Analytics dashboard
+Public real-time analytics dashboard powered by Google Analytics
 
 ## Installation
 
