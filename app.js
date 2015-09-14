@@ -111,18 +111,18 @@ setInterval(function(){
             console.log(err);
             return;
           }
-          if (realtime.length >= 180) {
+          if (realtime.length >= 360) {
             realtime.shift();
             realtime.forEach(function(r, i) {
-              r.x = i/180;
+              r.x = i/360;
             })
-	          realtime.push({x: realtime.length/180,
+	          realtime.push({x: realtime.length/360,
 	                         y: +result["totalsForAllResults"]["rt:activeUsers"],
 	                         time: Math.round(d.getTime()/1000)});
 					} else {
-						var rlength = 180-realtime.length;
+						var rlength = 360-realtime.length;
 						realtime.forEach(function(r, i) {
-              r.x = (rlength+i)/180;
+              r.x = (rlength+i)/360;
             })
 						realtime.push({x: 1,
 	                         y: +result["totalsForAllResults"]["rt:activeUsers"],

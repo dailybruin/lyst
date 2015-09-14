@@ -4,7 +4,7 @@ window.onload = function() {
   var width = $("body").width() - 100,
   height = 400-37;
 
-  var points = 180;
+  var points = 360;
   var lines = 1;
 
   var margin = {top: 20, right:20, bottom:20, left:50};
@@ -33,16 +33,6 @@ window.onload = function() {
     x.range([0, width - margin.left - margin.right]);
     render(data);
   }
-
-  var pointTip = d3.tip()
-                  .attr('class', 'point-tip')
-                  .html(function(d) {
-                      return "<p>Minutes ago: " +
-                                Math.round((179 - (d.x * points))/6*100)/100
-                                + "</p>" + "<p>Active users: " +d.y +"</p>";
-                        });
-
-  svg.call(pointTip);
 
   d3.select(window).on('resize', resize);
 
@@ -92,7 +82,7 @@ window.onload = function() {
       var xAxis = d3.svg.axis()
           .scale(x)
           .orient("bottom")
-          .tickFormat(function(d) { return 30-d*30; })
+          .tickFormat(function(d) { return 60-d*60; })
           .tickValues(d3.range(0, 1, 0.1));
 
       // create axis scale
