@@ -1,4 +1,5 @@
 lineRender = function(data){
+    $("#loading").hide();
     // obtain absolute min and max
     var yMin = data.reduce(function(pv,cv){
         var currentMin = cv.reduce(function(pv,cv){

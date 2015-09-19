@@ -1,4 +1,5 @@
 scatterRender = function(data) {
+  $("#loading").hide();
   var x = d3.scale.linear()
       .range([0, width]);
 

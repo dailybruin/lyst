@@ -201,3 +201,9 @@ div#viz-title span {
   margin-left: -23px;
   font-size: 1.8rem;
 }
+
+img#loading {
+  vertical-align: top;
+  display: block;
+  margin: 200px auto;
+}
