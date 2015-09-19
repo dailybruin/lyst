@@ -15,13 +15,16 @@ lineRender = function(data){
 
     // set domain for axis
     x.domain([0,1-1/points]);
-    y.domain([yMin,yMax]);
+    y.domain([0,yMax]);
+
+
+    var axisPoints = points > 30 ? 12 : points;
 
     var xAxis = d3.svg.axis()
         .scale(x)
         .orient("bottom")
         .tickFormat(function(d) { return Math.round(d*points)+1; })
-        .tickValues(d3.range(0, 1, 1/points));
+        .tickValues(d3.range(0, 1, 1/axisPoints));
 
     // create axis scale
     var yAxis = d3.svg.axis()
@@ -38,7 +41,7 @@ lineRender = function(data){
           .attr("x", width-10)
           .attr("y", -6)
           .style("text-anchor", "end")
-          .text("minutes ago");
+          .text(xText + "s index");
     } else {
         svg.selectAll(".x.axis").transition().duration(1500).call(xAxis);
         svg.selectAll(".x.label").transition().duration(1500).attr("x", width-10);

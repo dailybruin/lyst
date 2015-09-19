@@ -17,7 +17,6 @@
         <li class="title">lyst</li>
         <li><a href="/">Real time</a></li>
         <li><a href="/yesterday">Yesterday</a></li>
-        <li><a href="/7days">7 days</a></li>
         <li><a href="/30days">30 days</a></li>
         <li><a href="/1year">1 year</a></li>
         <li><a href="/custom">Custom query</a></li>
@@ -27,7 +26,7 @@
     <span>(updated <%- update %>)</span>
     <div id="viz-title">
       <select onchange="select(this)" class="viz-select">
-        <option value="line">users views v. time</option>
+        <option value="line">users views v. time by <%- xText %></option>
         <option value="scatter">sessions v. bounces</option>
       </select>
       <span>&#8964;</span>
@@ -45,8 +44,10 @@
   var duration = 0;
   var sessions = 0;
   
-  var points = 24;
+  var points = <%- points %>;
   var lines = 3;
+  
+  var xText = "<%- xText %>"
 
   var margin = {top: 10, right: 50, bottom: 30, left: 80},
     width = $("body").width() - 70 - margin.right - margin.left,
@@ -118,15 +119,15 @@
       var temp = 0;
       for (var i = 0; i < message.length; i++) {
         if (message[i][0] == "New Visitor") {
-          newusers.push({x:message[i][1]/24,
+          newusers.push({x:message[i][1]/points,
                          y:message[i][2]/1,
                          name:message[i][0]+"s"});
           temp = message[i][2]/1;
         } else if (message[i][0] == "Returning Visitor") {
-          oldusers.push({x:message[i][1]/24,
+          oldusers.push({x:message[i][1]/points,
                          y:message[i][2]/1,
                          name:message[i][0]+"s"});
-          totalusers.push({x:message[i][1]/24,
+          totalusers.push({x:message[i][1]/points,
                            y:temp+(message[i][2]/1),
                            name:"Total Visitors"});
         }
@@ -142,7 +143,6 @@
   
   socket.on("<%- pages %>", function (message) {
       if (message != undefined) {
-        $("#area1").width('60%');
         $("#area1").html("<h2>Popular pages</h2>");
         $("#area1").append("<table></table>");
         for (var i = 0; i < message.length; i++) {
@@ -153,13 +153,29 @@
       }
   });
   
+  socket.on("<%- sources %>", function (message) {
+      if (message != undefined) {
+        if ($("#area2 table.sources").length && $("#area2 table.searches").length) {
+          $("#area2").html("");
+        }
+        $("#area2").append("<h2>Popular sources</h2>");
+        $("#area2").append("<table class='sources'></table>");
+        for (var i = 0; i < message.length; i++) {
+          $("#area2 table.sources").append("<tr><td>"+message[i][0]
+            +"</td><td class='viewcount'>"+ message[i][1] +"</td></tr>");
+        }
+      }
+  });
+  
   socket.on("<%- searches %>", function (message) {
       if (message != undefined) {
-        $("#area2").width('25%');
-        $("#area2").html("<h2>Popular search terms</h2>");
-        $("#area2").append("<table></table>");
+        if ($("#area2 table.sources").length && $("#area2 table.searches").length) {
+          $("#area2").html("");
+        }
+        $("#area2").append("<h2>Popular search terms</h2>");
+        $("#area2").append("<table class='searches'></table>");
         for (var i = 0; i < message.length; i++) {
-          $("#area2 table").append("<tr><td>"+message[i][0]
+          $("#area2 table.searches").append("<tr><td>"+message[i][0]
             +"</td><td class='viewcount'>"+ message[i][1] +"</td></tr>");
         }
       }

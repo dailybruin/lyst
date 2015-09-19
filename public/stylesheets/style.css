@@ -47,7 +47,12 @@ a:hover {
 }
 
 #area1 {
+  width: 60%;
   margin-right: 2rem;
+}
+
+#area2 {
+  width: 25%;
 }
 
 #area1 table,
@@ -169,4 +174,30 @@ p.limit span {
 
 p.error {
   color: red;
+}
+
+select.viz-select {
+  background: transparent;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  display: block;
+  margin: auto;
+  font-size: 1.3rem;
+  padding: 0.2rem 0.2rem;
+  padding-right: 25px;
+  border: none;
+  border-radius: 0;
+  border-bottom: rgba(98, 7, 196,0.2) solid medium;
+  /*text-decoration: underline;*/
+  margin-bottom:-0.5rem;
+  display: inline-block;
+}
+
+div#viz-title {
+  text-align:center;
+}
+div#viz-title span {
+  margin-left: -23px;
+  font-size: 1.8rem;
 }
