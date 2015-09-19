@@ -51,16 +51,8 @@ window.onload = function() {
 
   //render data with data update input
   function render(update){
-      var pointList = [[]];
       if (update != null) {
           data = update;
-          update.forEach(function(up){
-            up.forEach(function(u, i){
-              if (i%12 == 11) {
-                pointList[0].push(u);
-              }
-            });
-          });
       }
       // obtain absolute min and max
       var yMin = data.reduce(function(pv,cv){
