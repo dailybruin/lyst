@@ -1,9 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel='stylesheet' href='/stylesheets/style.css'></link>
+    <title>lyst | Daily Bruin</title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <link rel="icon" href="/images/favicon.ico">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.6.7/d3-tip.min.js"></script>
+    <script src="/javascripts/<%- javascript %>"></script>
   </head>
   <body>
+    <header>
+      <ul>
+        <li class="title">lyst</li>
+        <li><a href="/">Real time</a></li>
+        <li><a href="/yesterday">Yesterday</a></li>
+        <li><a href="/30days">30 days</a></li>
+        <li><a href="/1year">1 year</a></li>
+        <li><a href="/custom">Custom query</a></li>
+      </ul>
+    </header>
     <h1><%- message %></h1>
     <h2><%- error.status %></h2>
     <pre><%- error.stack %></pre>
