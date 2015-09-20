@@ -101,6 +101,7 @@
   });
   
   socket.on("<%- users %>", function (message) {
+    svg.selectAll("*").remove();
     var data = [];
     for (var l = 0; l < lines; l++) {
       data.push([]);
