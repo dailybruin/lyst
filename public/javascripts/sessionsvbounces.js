@@ -123,6 +123,6 @@ scatterRender = function(data) {
             .attr("y", height-50)
             .attr("dy", ".35em")
             .style("text-anchor", "middle")
-            .text("avg. session duration (in sec)");
+            .text("average session duration (in sec)");
     }
 }
