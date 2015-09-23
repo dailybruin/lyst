@@ -25,6 +25,7 @@
     </header>
     <h1 class="title"><%- title %></h1>
     <span>(updated <%- update %>)</span>
+    <div id="error">Uh oh... Something bad happened.</div>
     <div id="viz-title">
       <select onchange="select(this)" class="viz-select">
         <option value="line">users views vs. time by <%- xText %></option>
@@ -182,4 +183,12 @@
         }
       }
   });
+  
+  socket.on("defaultError", function(message) {
+    if (message) {
+      $("#error").css("display", "block");
+    } else {
+      $("#error").css("display", "none");
+    }
+  })
 </script>

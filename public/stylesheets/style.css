@@ -207,3 +207,11 @@ img#loading {
   display: block;
   margin: 200px auto;
 }
+
+#error {
+  display: none;
+  text-align: center;
+  background-color: rgba(255,0,0,0.2);
+  padding: 1rem;
+  margin: 1rem;
+}

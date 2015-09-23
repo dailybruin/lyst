@@ -262,7 +262,10 @@ io.on('connection', function (socket) {
       if (!error && response.statusCode == 200) {
         result = JSON.parse(body);
         io.sockets.emit(emitName, result["rows"]);
-      }
+				io.sockets.emit("defaultError", null);
+      } else {
+				io.sockets.emit("defaultError", "error");
+			}
     })
   }
 });
