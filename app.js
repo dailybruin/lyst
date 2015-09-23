@@ -194,7 +194,7 @@ setInterval(function(){
   }, 10000);
 
 var customLimit = 100;
-
+console.log("YEESSS");
 io.on('connection', function (socket) {
   socket.on('initialRealtime', function(message) {
     io.sockets.emit("realtime", realtime);
@@ -202,7 +202,7 @@ io.on('connection', function (socket) {
 																			searchStats: searches,
 																			sourceStats: sources});
   })
-
+// console.log("YEESSS");
   socket.on('custom', function (message) {
     if (message.initial) {
       socket.emit("customresponse", {result: false, error: false, limit: customLimit})
@@ -232,42 +232,41 @@ io.on('connection', function (socket) {
       });
     }
   })
-
-	for (var r in requests) {
-		if (requests.hasOwnProperty(r) && r != 'viewid') {
-			makeRequest(r, requests[r]);
-		}
-	}
-	
-  var job = new CronJob('00 01 00 * * *', function(){
-      // Runs every day (Monday through Friday)
-      // at 12:00:00 AM.
-      //set custom limit to 100
-      customLimit = 100;
-
-			for (var r in requests) {
-				if (requests.hasOwnProperty(r) && r != 'viewid') {
-					makeRequest(r, requests[r]);
-				}
-			}
-		},
-    null,
-    true /* Start the job right now */,
-    "America/Los_Angeles" /* Time zone of this job. */
-  );
-
-  function makeRequest(emitName, queryurl) {
-    var result;
-    request(queryurl, function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        result = JSON.parse(body);
-        io.sockets.emit(emitName, result["rows"]);
-				io.sockets.emit("defaultError", null);
-      } else {
-				io.sockets.emit("defaultError", "error");
-			}
-    })
-  }
 });
+for (var r in requests) {
+	if (requests.hasOwnProperty(r) && r != 'viewid') {
+		makeRequest(r, requests[r]);
+	}
+}
+
+var job = new CronJob('00 01 00 * * *', function(){
+		// Runs every day
+		// at 12:01:00 AM.
+		//set custom limit to 100
+		customLimit = 100;
+
+		for (var r in requests) {
+			if (requests.hasOwnProperty(r) && r != 'viewid') {
+				makeRequest(r, requests[r]);
+			}
+		}
+	},
+	null,
+	true /* Start the job right now */,
+	"America/Los_Angeles" /* Time zone of this job. */
+);
+
+function makeRequest(emitName, queryurl) {
+	var result;
+	request(queryurl, function (error, response, body) {
+		if (!error && response.statusCode == 200) {
+			result = JSON.parse(body);
+			io.sockets.emit(emitName, result["rows"]);
+			io.sockets.emit("defaultError", null);
+		} else {
+			io.sockets.emit("defaultError", "error");
+		}
+	})
+}
 
 module.exports = app;
