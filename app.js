@@ -82,6 +82,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
+//real time data
 var realtime = [];
 var sources = [];
 var pages = [];
@@ -194,7 +195,8 @@ setInterval(function(){
   }, 10000);
 
 var customLimit = 100;
-console.log("YEESSS");
+var defaultData = {};
+
 io.on('connection', function (socket) {
   socket.on('initialRealtime', function(message) {
     io.sockets.emit("realtime", realtime);
@@ -202,7 +204,9 @@ io.on('connection', function (socket) {
 																			searchStats: searches,
 																			sourceStats: sources});
   })
-// console.log("YEESSS");
+	
+	io.sockets.emit("default", defaultData);
+
   socket.on('custom', function (message) {
     if (message.initial) {
       socket.emit("customresponse", {result: false, error: false, limit: customLimit})
@@ -261,10 +265,9 @@ function makeRequest(emitName, queryurl) {
 	request(queryurl, function (error, response, body) {
 		if (!error && response.statusCode == 200) {
 			result = JSON.parse(body);
-			io.sockets.emit(emitName, result["rows"]);
-			io.sockets.emit("defaultError", null);
+			defaultData[emitName] = result["rows"];
 		} else {
-			io.sockets.emit("defaultError", "error");
+			defaultData[emitName] = "error";
 		}
 	})
 }
